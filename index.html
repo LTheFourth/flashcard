@@ -5,31 +5,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcard HSK3 - Số lượng và Hán tự</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS cho giao diện chung */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            /* Màu nền nhẹ nhàng */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="1.5" fill="%23ffffff" opacity="0.1"/></svg>');
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 100%;
         }
 
         h1 {
-            color: #333;
+            color: #ffffff;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.5px;
         }
 
-        /* CSS cho flashcard */
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
         .flashcard {
-            width: 300px;
-            height: 200px;
-            perspective: 1000px;
-            /* Hiệu ứng 3D */
-            margin: 20px;
+            width: 100%;
+            max-width: 450px;
+            height: 280px;
+            perspective: 1500px;
+            margin: 0 auto 30px;
+            cursor: pointer;
         }
 
         .card-inner {
@@ -37,7 +79,7 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.6s;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
         }
 
@@ -51,56 +93,181 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #fff;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .flashcard:hover .card-front,
+        .flashcard:hover .card-back {
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4),
+                        0 0 0 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-front::before {
+            content: '中文';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .card-back {
             transform: rotateY(180deg);
-            background-color: #e6f7ff;
-            /* Màu nền khác cho mặt sau */
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .card-back::before {
+            content: 'Tiếng Việt';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card-front #card-front,
+        .card-back #card-back {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 600;
+            color: #ffffff;
+            font-family: 'Noto Sans SC', 'Inter', sans-serif;
+            line-height: 1.4;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 10px;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
             border: none;
-            border-radius: 5px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #next-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #next-button:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+
+        @media (max-width: 480px) {
+            .flashcard {
+                height: 240px;
+            }
+
+            button {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 
 <body>
-    <h1>Flashcard Học Số Lượng và Hán Tự HSK3</h1>
-    <p>Chủ đề: Giao tiếp hàng ngày. Click vào thẻ để lật, và nhấn "Tiếp theo" để chuyển.</p>
+    <div class="container">
+        <h1>Flashcard HSK3 🇨🇳</h1>
+        <p class="subtitle">Học Số Lượng và Hán Tự - Giao tiếp hàng ngày<br>Click vào thẻ để lật</p>
 
-    <div id="flashcard-container" class="flashcard">
-        <div class="card-inner">
-            <div class="card-front" id="card-front">
-                <!-- Nội dung mặt trước sẽ được JS thay đổi -->
-            </div>
-            <div class="card-back" id="card-back">
-                <!-- Nội dung mặt sau sẽ được JS thay đổi -->
+        <div id="flashcard-container" class="flashcard">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div id="card-front">
+                        <!-- Nội dung mặt trước sẽ được JS thay đổi -->
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div id="card-back">
+                        <!-- Nội dung mặt sau sẽ được JS thay đổi -->
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <button id="flip-button">Lật thẻ</button>
-    <button id="next-button">Tiếp theo</button>
+        <div class="controls">
+            <button id="flip-button">🔄 Lật thẻ</button>
+            <button id="next-button">Tiếp theo →</button>
+        </div>
+    </div>
 
     <script>
         // Danh sách từ vựng (mảng dữ liệu)
@@ -430,6 +597,16 @@ const flashcards = [
             { chinese: "作业", pinyin: "zuòyè", vietnamese: "bài tập" }
         ];
         let currentIndex = 0; // Chỉ số flashcard hiện tại
+        let previousIndex = -1; // Lưu chỉ số trước đó để tránh lặp lại
+
+        function getRandomIndex() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * flashcards.length);
+            } while (newIndex === previousIndex && flashcards.length > 1);
+            previousIndex = newIndex;
+            return newIndex;
+        }
 
         function updateFlashcard() {
             const card = flashcards[currentIndex];
@@ -438,7 +615,8 @@ const flashcards = [
                 `<strong>Phiên âm:</strong> ${card.pinyin}<br><strong>Nghĩa:</strong> ${card.vietnamese}`;  // Mặt sau: Pinyin và Nghĩa tiếng Việt
         }
 
-        // Khởi tạo flashcard đầu tiên
+        // Khởi tạo flashcard đầu tiên (random)
+        currentIndex = getRandomIndex();
         updateFlashcard();
 
         // Xử lý lật thẻ
@@ -446,9 +624,9 @@ const flashcards = [
             document.getElementById('flashcard-container').classList.toggle('flipped');
         });
 
-        // Xử lý nút "Tiếp theo"
+        // Xử lý nút "Tiếp theo" - chọn ngẫu nhiên
         document.getElementById('next-button').addEventListener('click', function () {
-            currentIndex = (currentIndex + 1) % flashcards.length;  // Chuyển sang cái tiếp theo, quay lại đầu nếu hết
+            currentIndex = getRandomIndex();  // Chọn flashcard ngẫu nhiên
             document.getElementById('flashcard-container').classList.remove('flipped');  // Reset lật thẻ
             updateFlashcard();
         });
