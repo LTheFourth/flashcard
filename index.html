@@ -285,7 +285,7 @@
         <p class="subtitle">Học Số Lượng và Hán Tự - Giao tiếp hàng ngày<br>Click vào thẻ để lật</p>
 
         <div id="flashcard-container" class="flashcard">
-            <div class="card-inner">
+            <div class="card-inner" id="card-inner">
                 <div class="card-front">
                     <div id="card-front">
                         <!-- Nội dung mặt trước sẽ được JS thay đổi -->
@@ -347,6 +347,10 @@
 
         // Xử lý lật thẻ
         document.getElementById('flip-button').addEventListener('click', function () {
+            document.getElementById('flashcard-container').classList.toggle('flipped');
+        });
+
+        document.getElementById('card-inner').addEventListener('click', function () {
             document.getElementById('flashcard-container').classList.toggle('flipped');
         });
 
