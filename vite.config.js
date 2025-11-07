@@ -57,6 +57,26 @@ export default defineConfig({
             src: 'pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png'
+          },
+          {
+            src: 'android/android-launchericon-144-144.png',
+            sizes: '144x144',
+            type: 'image/png'
+          },
+          {
+            src: 'android/android-launchericon-96-96.png',
+            sizes: '96x96',
+            type: 'image/png'
+          },
+          {
+            src: 'android/android-launchericon-72-72.png',
+            sizes: '72x72',
+            type: 'image/png'
+          },
+          {
+            src: 'android/android-launchericon-48-48.png',
+            sizes: '48x48',
+            type: 'image/png'
           }
         ]
       }

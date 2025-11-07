@@ -1,0 +1,8 @@
+{
+  "public": "preview",
+  "cleanUrls": false,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/flashcard/**", "destination": "/flashcard/index.html" }
+  ]
+}
