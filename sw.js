@@ -254,9 +254,6 @@ async function handleNavigationRequest(request) {
         </style>
       </head>
       <body>
-        <div class="offline-icon">📚</div>
-        <h1>You're offline</h1>
-        <p>Flashcard HSK is working offline. Your progress and data are saved locally.</p>
         <button class="retry-btn" onclick="window.location.reload()">Try Again</button>
       </body>
       </html>

@@ -51,8 +51,289 @@ class FlashcardApp {
                 { "chinese": "地铁", "pinyin": "dìtiě", "vietnamese": "tàu điện ngầm", "example": "我每天坐地铁上班。", "example_vi": "Tôi đi làm bằng tàu điện ngầm mỗi ngày." },
                 { "chinese": "地图", "pinyin": "dìtú", "vietnamese": "bản đồ", "example": "你看一下地图，我们现在在哪里？", "example_vi": "Bạn xem bản đồ một chút, chúng ta đang ở đâu?" },
                 { "chinese": "电梯", "pinyin": "diàntī", "vietnamese": "thang máy", "example": "我们坐电梯上去吧。", "example_vi": "Chúng ta đi thang máy lên đi." },
-        ],
-            hsk4: [] // Placeholder for future HSK4 cards
+            ],
+            hsk4: [
+                {
+                    "chinese": "兵",
+                    "pinyin": "bīng",
+                    "vietnamese": "lính, quân lính (cũng dùng trước từ phủ định để nhấn mạnh)",
+                    "example": "他当了三年兵。",
+                    "example_vi": "Anh ấy đã đi lính ba năm."
+                },
+                {
+                    "chinese": "俩",
+                    "pinyin": "liǎ",
+                    "vietnamese": "hai (chỉ số lượng, thường dùng trong khẩu ngữ)",
+                    "example": "我们俩是好朋友。",
+                    "example_vi": "Hai chúng tôi là bạn tốt."
+                },
+                {
+                    "chinese": "精神",
+                    "pinyin": "jīngshén",
+                    "vietnamese": "tinh thần",
+                    "example": "他今天看起来精神很好。",
+                    "example_vi": "Hôm nay trông anh ấy tinh thần rất tốt."
+                },
+                {
+                    "chinese": "力量",
+                    "pinyin": "lìliang",
+                    "vietnamese": "sức, sức lực",
+                    "example": "团队的力量是无穷的。",
+                    "example_vi": "Sức mạnh của tập thể là vô hạn."
+                },
+                {
+                    "chinese": "厉害",
+                    "pinyin": "lìhai",
+                    "vietnamese": "lợi hại, ghê gớm",
+                    "example": "你的中文说得真厉害！",
+                    "example_vi": "Tiếng Trung của bạn nói thật lợi hại!"
+                },
+                {
+                    "chinese": "连",
+                    "pinyin": "lián",
+                    "vietnamese": "ngay cả",
+                    "example": "他忙得连饭都没时间吃。",
+                    "example_vi": "Anh ấy bận đến mức ngay cả ăn cơm cũng không có thời gian."
+                },
+                {
+                    "chinese": "联系",
+                    "pinyin": "liánxì",
+                    "vietnamese": "liên hệ",
+                    "example": "我们以后要多联系。",
+                    "example_vi": "Sau này chúng ta phải liên lạc nhiều hơn."
+                },
+                {
+                    "chinese": "凉快",
+                    "pinyin": "liángkuai",
+                    "vietnamese": "mát mẻ",
+                    "example": "下雨以后，天气凉快多了。",
+                    "example_vi": "Sau khi mưa, thời tiết mát mẻ hơn nhiều."
+                },
+                {
+                    "chinese": "临时",
+                    "pinyin": "línshí",
+                    "vietnamese": "tạm thời, lâm thời",
+                    "example": "这是一个临时的决定。",
+                    "example_vi": "Đây là một quyết định tạm thời."
+                },
+                {
+                    "chinese": "梦",
+                    "pinyin": "mèng",
+                    "vietnamese": "giấc mơ",
+                    "example": "我昨天做了一个奇怪的梦。",
+                    "example_vi": "Hôm qua tôi có một giấc mơ kỳ lạ."
+                },
+                {
+                    "chinese": "面前",
+                    "pinyin": "miànqián",
+                    "vietnamese": "trước mặt",
+                    "example": "不要在孩子面前吵架。",
+                    "example_vi": "Đừng cãi nhau trước mặt con trẻ."
+                },
+                {
+                    "chinese": "醒",
+                    "pinyin": "xǐng",
+                    "vietnamese": "tỉnh (ngủ)",
+                    "example": "你一般早上几点醒？",
+                    "example_vi": "Bạn thường tỉnh dậy lúc mấy giờ sáng?"
+                },
+                {
+                    "chinese": "信封",
+                    "pinyin": "xìnfēng",
+                    "vietnamese": "phong bì, bì thư",
+                    "example": "我需要一个信封来寄这封信。",
+                    "example_vi": "Tôi cần một cái phong bì để gửi lá thư này."
+                },
+                {
+                    "chinese": "修理",
+                    "pinyin": "xiūlǐ",
+                    "vietnamese": "sửa chữa",
+                    "example": "我的自行车坏了，需要修理一下。",
+                    "example_vi": "Xe đạp của tôi bị hỏng, cần phải sửa chữa một chút."
+                },
+                {
+                    "chinese": "咸",
+                    "pinyin": "xián",
+                    "vietnamese": "mặn",
+                    "example": "这个菜有点咸。",
+                    "example_vi": "Món này hơi mặn."
+                },
+                {
+                    "chinese": "响",
+                    "pinyin": "xiǎng",
+                    "vietnamese": "kêu, vang",
+                    "example": "你的手机响了。",
+                    "example_vi": "Điện thoại của bạn reo kìa."
+                },
+                {
+                    "chinese": "相反",
+                    "pinyin": "xiāngfǎn",
+                    "vietnamese": "tương phản, trái lại",
+                    "example": "他说他很忙，但相反，他很闲。",
+                    "example_vi": "Anh ấy nói anh ấy rất bận, nhưng trái lại, anh ấy rất rảnh."
+                },
+                {
+                    "chinese": "消息",
+                    "pinyin": "xiāoxi",
+                    "vietnamese": "tin tức",
+                    "example": "你听到那个好消息了吗？",
+                    "example_vi": "Bạn đã nghe được tin tốt đó chưa?"
+                },
+                {
+                    "chinese": "小偷",
+                    "pinyin": "xiǎotōu",
+                    "vietnamese": "kẻ trộm",
+                    "example": "他抓到了那个小偷。",
+                    "example_vi": "Anh ấy đã bắt được tên trộm đó."
+                },
+                {
+                    "chinese": "尊重",
+                    "pinyin": "zūnzhòng",
+                    "vietnamese": "tôn trọng",
+                    "example": "我们应该互相尊重。",
+                    "example_vi": "Chúng ta nên tôn trọng lẫn nhau."
+                },
+                {
+                    "chinese": "按",
+                    "pinyin": "àn",
+                    "vietnamese": "theo, dựa vào",
+                    "example": "请按时完成工作。",
+                    "example_vi": "Xin hãy hoàn thành công việc theo đúng thời hạn."
+                },
+                {
+                    "chinese": "报告",
+                    "pinyin": "bàogào",
+                    "vietnamese": "báo cáo",
+                    "example": "他正在写一份工作报告。",
+                    "example_vi": "Anh ấy đang viết một bản báo cáo công việc."
+                },
+                {
+                    "chinese": "差不多",
+                    "pinyin": "chàbuduō",
+                    "vietnamese": "khoảng, xấp xỉ, cũng gần như",
+                    "example": "他们俩的个子差不多高。",
+                    "example_vi": "Vóc dáng của hai người họ cao xấp xỉ nhau."
+                },
+                {
+                    "chinese": "尝",
+                    "pinyin": "cháng",
+                    "vietnamese": "nếm",
+                    "example": "你尝尝这个菜，味道很好。",
+                    "example_vi": "Bạn nếm thử món này đi, vị rất ngon."
+                },
+                {
+                    "chinese": "重新",
+                    "pinyin": "chóngxīn",
+                    "vietnamese": "làm lại, một lần nữa",
+                    "example": "这个问题我们需要重新考虑。",
+                    "example_vi": "Vấn đề này chúng ta cần xem xét lại."
+                },
+                {
+                    "chinese": "答案",
+                    "pinyin": "dá’àn",
+                    "vietnamese": "đáp án",
+                    "example": "你知道这道题的答案吗？",
+                    "example_vi": "Bạn có biết đáp án của câu hỏi này không?"
+                },
+                {
+                    "chinese": "打扰",
+                    "pinyin": "dǎrǎo",
+                    "vietnamese": "làm phiền",
+                    "example": "对不起，打扰一下，请问洗手间在哪里？",
+                    "example_vi": "Xin lỗi, làm phiền một chút, cho hỏi nhà vệ sinh ở đâu?"
+                },
+                {
+                    "chinese": "地址",
+                    "pinyin": "dìzhǐ",
+                    "vietnamese": "địa chỉ",
+                    "example": "请把你的地址写给我。",
+                    "example_vi": "Xin hãy viết địa chỉ của bạn cho tôi."
+                },
+                {
+                    "chinese": "动作",
+                    "pinyin": "dòngzuò",
+                    "vietnamese": "động tác",
+                    "example": "他的舞蹈动作很优美。",
+                    "example_vi": "Động tác múa của cô ấy rất uyển chuyển."
+                },
+                {
+                    "chinese": "堵车",
+                    "pinyin": "dǔchē",
+                    "vietnamese": "tắc đường, kẹt xe",
+                    "example": "我上班迟到了，因为路上堵车很严重。",
+                    "example_vi": "Tôi đi làm muộn vì trên đường kẹt xe nghiêm trọng."
+                },
+                {
+                    "chinese": "翻译",
+                    "pinyin": "fānyì",
+                    "vietnamese": "phiên dịch",
+                    "example": "你能帮我翻译这段话吗？",
+                    "example_vi": "Bạn có thể giúp tôi phiên dịch đoạn này không?"
+                },
+                {
+                    "chinese": "反对",
+                    "pinyin": "fǎnduì",
+                    "vietnamese": "phản đối",
+                    "example": "我反对这个计划。",
+                    "example_vi": "Tôi phản đối kế hoạch này."
+                },
+                {
+                    "chinese": "法律",
+                    "pinyin": "fǎlǜ",
+                    "vietnamese": "pháp luật",
+                    "example": "每个人都应该遵守法律。",
+                    "example_vi": "Mọi người đều nên tuân thủ pháp luật."
+                },
+                {
+                    "chinese": "公里",
+                    "pinyin": "gōnglǐ",
+                    "vietnamese": "ki-lô-mét (km)",
+                    "example": "我家离公司有五公里远。",
+                    "example_vi": "Nhà tôi cách công ty 5 km."
+                },
+                {
+                    "chinese": "工资",
+                    "pinyin": "gōngzī",
+                    "vietnamese": "lương",
+                    "example": "这个月你的工资发了吗？",
+                    "example_vi": "Tháng này bạn đã nhận lương chưa?"
+                },
+                {
+                    "chinese": "逛",
+                    "pinyin": "guàng",
+                    "vietnamese": "dạo",
+                    "example": "我们晚上去逛街吧。",
+                    "example_vi": "Buổi tối chúng ta đi dạo phố đi."
+                },
+                {
+                    "chinese": "广告",
+                    "pinyin": "guǎnggào",
+                    "vietnamese": "quảng cáo",
+                    "example": "我不喜欢看电视广告。",
+                    "example_vi": "Tôi không thích xem quảng cáo trên TV."
+                },
+                {
+                    "chinese": "国际",
+                    "pinyin": "guójì",
+                    "vietnamese": "quốc tế",
+                    "example": "这是一个国际会议。",
+                    "example_vi": "Đây là một hội nghị quốc tế."
+                },
+                {
+                    "chinese": "果汁",
+                    "pinyin": "guǒzhī",
+                    "vietnamese": "nước trái cây",
+                    "example": "我早上喜欢喝一杯果汁。",
+                    "example_vi": "Buổi sáng tôi thích uống một ly nước trái cây."
+                },
+                {
+                    "chinese": "合适",
+                    "pinyin": "héshì",
+                    "vietnamese": "thích hợp",
+                    "example": "这件衣服你穿很合适。",
+                    "example_vi": "Bộ quần áo này bạn mặc rất hợp."
+                }
+            ] // Placeholder for future HSK4 cards
         };
 
         // App state
@@ -64,20 +345,20 @@ class FlashcardApp {
         this.cardFrequencies = {};
         this.cardsLearned = 0;
         this.sessionCards = [];
-        
+
         // Swipe state
         this.isDragging = false;
         this.startX = 0;
         this.currentX = 0;
         this.cardBeingDragged = null;
-        
+
         // DOM elements
         this.cardStack = document.getElementById('cardStack');
         this.splashScreen = document.getElementById('splash-screen');
         this.noMoreCards = document.getElementById('noMoreCards');
         this.progressFill = document.getElementById('progressFill');
         this.cardsLearnedEl = document.getElementById('cards-learned');
-        
+
         this.init();
     }
 
@@ -89,10 +370,21 @@ class FlashcardApp {
     }
 
     loadFlashcards() {
+        console.log('loadFlashcards called for level:', this.currentHSKLevel);
+        console.log('Available data keys:', Object.keys(this.flashcardData));
+        console.log('HSK4 data exists:', !!this.flashcardData.hsk4);
+        
         this.currentFlashcards = [...this.flashcardData[this.currentHSKLevel]];
+        console.log(this.currentFlashcards)
+        
+        console.log('Loaded flashcards:', this.currentFlashcards.length, 'cards');
+        console.log('Sample card:', this.currentFlashcards[0]);
+        
         this.initializeCardFrequencies();
         this.shuffleCards();
         this.sessionCards = [...this.currentFlashcards];
+        
+        console.log('Session cards set:', this.sessionCards.length, 'cards');
     }
 
     initializeCardFrequencies() {
@@ -110,41 +402,41 @@ class FlashcardApp {
     getWeightedRandomCards() {
         const cards = [...this.currentFlashcards];
         const weights = Object.values(this.cardFrequencies);
-        
+
         // Fisher-Yates shuffle with weights
         for (let i = cards.length - 1; i > 0; i--) {
             const j = this.getWeightedRandomIndex(weights);
             [cards[i], cards[j]] = [cards[j], cards[i]];
             [weights[i], weights[j]] = [weights[j], weights[i]];
         }
-        
+
         return cards;
     }
 
     getWeightedRandomIndex(weights) {
         const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
         let random = Math.random() * totalWeight;
-        
+
         for (let i = 0; i < weights.length; i++) {
             random -= weights[i];
             if (random <= 0) {
                 return i;
             }
         }
-        
+
         return weights.length - 1;
     }
 
     renderCardStack() {
         this.cardStack.innerHTML = '';
         const cardsToShow = Math.min(5, this.cardQueue.length - this.currentIndex);
-        
+
         for (let i = 0; i < cardsToShow; i++) {
             const card = this.cardQueue[this.currentIndex + i];
             const cardEl = this.createCardElement(card, i === 0);
             this.cardStack.appendChild(cardEl);
         }
-        
+
         if (cardsToShow === 0) {
             this.showNoMoreCards();
         }
@@ -156,10 +448,10 @@ class FlashcardApp {
         if (isTopCard) {
             cardEl.classList.add('top-card');
         }
-        
+
         const frontContent = this.isChineseFirst ? card.chinese : card.vietnamese;
         const backContent = this.getCardBackContent(card);
-        
+
         cardEl.innerHTML = `
             <div class="card-inner">
                 <div class="card-face card-front">
@@ -171,11 +463,11 @@ class FlashcardApp {
                 </div>
             </div>
         `;
-        
+
         if (isTopCard) {
             this.setupCardInteractions(cardEl, card);
         }
-        
+
         return cardEl;
     }
 
@@ -208,13 +500,13 @@ class FlashcardApp {
         cardEl.addEventListener('touchstart', (e) => this.handleTouchStart(e, cardEl), { passive: true });
         cardEl.addEventListener('touchmove', (e) => this.handleTouchMove(e, cardEl), { passive: true });
         cardEl.addEventListener('touchend', (e) => this.handleTouchEnd(e, cardEl));
-        
+
         // Mouse events for desktop
         cardEl.addEventListener('mousedown', (e) => this.handleMouseDown(e, cardEl));
         cardEl.addEventListener('mousemove', (e) => this.handleMouseMove(e, cardEl));
         cardEl.addEventListener('mouseup', (e) => this.handleMouseUp(e, cardEl));
         cardEl.addEventListener('mouseleave', (e) => this.handleMouseUp(e, cardEl));
-        
+
         // Click to flip
         cardEl.addEventListener('click', (e) => {
             if (!this.isDragging) {
@@ -264,13 +556,13 @@ class FlashcardApp {
 
     drag(x, cardEl) {
         if (!this.isDragging) return;
-        
+
         this.currentX = x;
         const deltaX = x - this.startX;
         const rotation = deltaX / 15;
-        
+
         cardEl.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
-        
+
         // Add visual feedback based on swipe direction
         if (deltaX < -50) {
             cardEl.style.borderColor = '#fbbf24';
@@ -286,14 +578,14 @@ class FlashcardApp {
 
     endDrag(cardEl) {
         if (!this.isDragging) return;
-        
+
         this.isDragging = false;
         cardEl.classList.remove('dragging');
         cardEl.style.transition = '';
-        
+
         const deltaX = this.currentX - this.startX;
         const threshold = 100;
-        
+
         if (Math.abs(deltaX) > threshold) {
             if (deltaX > 0) {
                 this.swipeCard('right', cardEl);
@@ -306,28 +598,28 @@ class FlashcardApp {
             cardEl.style.borderColor = '';
             cardEl.style.boxShadow = '';
         }
-        
+
         this.cardBeingDragged = null;
     }
 
     swipeCard(direction, cardEl) {
         const isRemembered = direction === 'right';
-        
+
         // Animate card off screen
         if (direction === 'right') {
             cardEl.classList.add('swipe-right');
         } else {
             cardEl.classList.add('swipe-left');
         }
-        
+
         // Update frequency and stats
         this.updateCardFrequency(isRemembered);
         this.cardsLearned++;
         this.updateStats();
-        
+
         // Show splash screen
         this.showSplashScreen(isRemembered ? 'remembered' : 'recall');
-        
+
         // Remove card and show next
         setTimeout(() => {
             this.currentIndex++;
@@ -355,7 +647,7 @@ class FlashcardApp {
         this.splashScreen.className = `splash-screen show ${type}`;
         const icon = this.splashScreen.querySelector('.splash-icon');
         const text = this.splashScreen.querySelector('.splash-text');
-        
+
         if (type === 'recall') {
             icon.textContent = '🔄';
             text.textContent = 'Recall';
@@ -363,7 +655,7 @@ class FlashcardApp {
             icon.textContent = '✓';
             text.textContent = 'Remembered!';
         }
-        
+
         setTimeout(() => {
             this.splashScreen.classList.remove('show');
         }, 1000);
@@ -374,7 +666,11 @@ class FlashcardApp {
     }
 
     hideNoMoreCards() {
-        this.noMoreCards.style.display = 'none';
+        try {
+            this.noMoreCards.style.display = 'none';
+        } catch (error) {
+            console.info('Error hiding no more cards:', error);            
+        }
     }
 
     updateStats() {
@@ -388,31 +684,42 @@ class FlashcardApp {
 
     changeHSKLevel(level) {
         console.log('Changing HSK level to:', level);
+        console.log('Current level before change:', this.currentHSKLevel);
+        console.log('Available HSK4 cards count:', this.flashcardData.hsk4 ? this.flashcardData.hsk4.length : 0);
         
+        // Show visual notification
+        this.showNotification(`Switching to ${level.toUpperCase()}...`, 'info');
+
         this.currentHSKLevel = level;
         this.cardsLearned = 0;
         this.currentIndex = 0;
-        
+
+        console.log('Level set to:', this.currentHSKLevel);
+
         // Hide no more cards screen if visible
         this.hideNoMoreCards();
-        
+
         // Load new flashcards for the selected level
         this.loadFlashcards();
         
+        console.log('After loadFlashcards - current cards count:', this.currentFlashcards.length);
+        console.log('First card after level change:', this.currentFlashcards[0]);
+
         // Initialize frequencies for new cards
         this.initializeCardFrequencies();
-        
+
         // Shuffle the new cards
         this.shuffleCards();
-        
+
         // Render the new card stack
         this.renderCardStack();
-        
+
         // Update UI statistics
         this.updateStats();
-        this.updateProgress();
-        
+       
         console.log('HSK level changed successfully to', level, 'with', this.currentFlashcards.length, 'cards');
+        
+        // Show success notification with card count
     }
 
     toggleLanguageMode() {
@@ -455,18 +762,24 @@ class FlashcardApp {
         // Listen for React settings changes
         window.addEventListener('settingsChanged', (e) => {
             const { hskLevel, isChineseFirst } = e.detail;
-            
+
+            console.log('=== SETTINGS CHANGED EVENT ===');
             console.log('Received settings change:', { hskLevel, isChineseFirst });
-            
+            console.log('Current FlashcardApp level:', this.currentHSKLevel);
+            console.log('Should change level?', hskLevel !== this.currentHSKLevel);
+
             // Update HSK level if changed
             if (hskLevel !== this.currentHSKLevel) {
+                console.log('Calling changeHSKLevel with:', hskLevel);
                 this.changeHSKLevel(hskLevel);
+            } else {
+                console.log('Level unchanged, skipping changeHSKLevel');
             }
-            
+
             // Update language mode if changed
             if (isChineseFirst !== this.isChineseFirst) {
                 this.isChineseFirst = isChineseFirst;
-                this.renderCardStack(); // Re-render cards with new language mode
+                this.renderCardStack();
             }
         });
 
@@ -481,7 +794,7 @@ class FlashcardApp {
             const totalCards = this.sessionCards.length;
             const learnedCards = this.cardsLearned;
             const progressPercentage = totalCards > 0 ? Math.round((learnedCards / totalCards) * 100) : 0;
-            
+
             alert(`📊 Learning Progress\n\n📚 Total Cards: ${totalCards}\n✅ Cards Learned: ${learnedCards}\n📈 Progress: ${progressPercentage}%\n🎯 Current Level: ${this.currentHSKLevel.toUpperCase()}\n🌐 Language: ${this.isChineseFirst ? 'Chinese First' : 'Vietnamese First'}`);
         });
 
@@ -542,15 +855,15 @@ class FlashcardApp {
             // Get current progress from localStorage
             const progressKey = `flashcard_progress_${this.currentHSKLevel}`;
             const progressData = localStorage.getItem(progressKey);
-            
+
             if (progressData) {
                 const progress = JSON.parse(progressData);
                 console.log('Syncing progress data:', progress);
-                
+
                 // Here you could sync with a backend server
                 // For now, we'll just ensure it's stored locally
                 localStorage.setItem(progressKey, JSON.stringify(progress));
-                
+
                 // Show sync notification
                 this.showNotification('Progress synced successfully', 'success');
             }
@@ -566,7 +879,7 @@ class FlashcardApp {
         try {
             // Sync progress data
             await this.syncProgressData();
-            
+
             // Try to fetch updated flashcard data
             const fetched = await this.fetchOfflineData();
             if (fetched) {
@@ -619,9 +932,9 @@ class FlashcardApp {
             sessionCards: this.sessionCards,
             timestamp: new Date().toISOString()
         };
-        
+
         localStorage.setItem(progressKey, JSON.stringify(progress));
-        
+
         // Try to sync if online
         if (navigator.onLine) {
             this.syncProgressData();
@@ -632,7 +945,7 @@ class FlashcardApp {
     loadProgress() {
         const progressKey = `flashcard_progress_${this.currentHSKLevel}`;
         const savedProgress = localStorage.getItem(progressKey);
-        
+
         if (savedProgress) {
             try {
                 const progress = JSON.parse(savedProgress);

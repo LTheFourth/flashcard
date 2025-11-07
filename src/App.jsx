@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import HSKLevelSelector from './components/HSKLevelSelector.jsx';
 import LanguageToggle from './components/LanguageToggle.jsx';
 import ActionButtons from './components/ActionButtons.jsx';
-import Instructions from './components/Instructions.jsx';
 
 function App() {
   const [hskLevel, setHskLevel] = useState('hsk3');
+  console.log('React App initialized with HSK level:', hskLevel);
   const [isChineseFirst, setIsChineseFirst] = useState(true);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
