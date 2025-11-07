@@ -64,14 +64,53 @@ npm run format
 # Build for production
 npm run build
 
+# Build for GitHub Pages (with correct base path)
+npm run build:gh
+
 # Preview production build
 npm run preview
+
+# Preview GitHub Pages build locally
+npm run preview:gh
+
+# Deploy to GitHub Pages manually
+npm run deploy
 
 # Analyze bundle size
 npm run analyze
 
 # Clean build directory
 npm run clean
+```
+
+## 🚀 GitHub Pages Deployment
+
+### Automatic Deployment
+
+This project is configured for automatic deployment to GitHub Pages:
+
+1. **Push to main branch**: The app automatically builds and deploys
+2. **Pull requests**: Builds and runs tests but doesn't deploy  
+3. **Live URL**: https://lthefourth.github.io/flashcard/
+
+The workflow `.github/workflows/deploy.yml` handles:
+- Building the app with correct base path (`/flashcard/`)
+- Deploying to GitHub Pages
+- Running on every push to main branch
+
+### Manual Deployment
+
+```bash
+# Deploy manually to GitHub Pages
+npm run deploy
+```
+
+### Local Testing
+
+```bash
+# Test GitHub Pages build locally
+npm run preview:gh
+# Opens at http://localhost:3000/flashcard/
 ```
 
 ## Project Structure

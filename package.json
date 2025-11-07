@@ -9,6 +9,7 @@
     "build": "vite build",
     "build:gh": "vite build --base=/flashcard/",
     "preview": "vite preview",
+    "preview:gh": "yarn build:gh && yarn serve",
     "serve": "http-server dist -p 3000 -c-1",
     "optimize": "npm run build && npm run analyze",
     "analyze": "npx vite-bundle-analyzer dist",
