@@ -38,6 +38,8 @@ export default defineConfig({
       },
       includeAssets: [
     'favicon.ico', 
+    'favicon.png',
+    'favicon.svg',
     'apple-touch-icon.png', 
     'masked-icon.svg',
     'pwa-192x192.png',

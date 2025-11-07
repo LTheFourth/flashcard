@@ -29,6 +29,14 @@ jobs:
     - name: Build for GitHub Pages
       run: yarn build:gh
       
+    - name: Copy icons for PWA
+      run: |
+        cp pwa-192x192.png dist/pwa-192x192.png || true
+        cp pwa-512x512.png dist/pwa-512x512.png || true
+        cp favicon.png dist/favicon.png || true
+        cp favicon.svg dist/favicon.svg || true
+        cp -r android dist/android || true
+        
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       if: github.ref == 'refs/heads/main'
