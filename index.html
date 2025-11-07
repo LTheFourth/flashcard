@@ -1,48 +1,180 @@
 <!DOCTYPE html>
-<html lang="vi">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard HSK3 - Số lượng và Hán tự</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="description" content="A modern flashcard app for learning Chinese vocabulary with Tinder-like swipe interface">
+    <meta name="keywords" content="flashcard, chinese, hsk, learning, education, react, pwa">
+    <meta name="author" content="Flashcard HSK Team">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flashcard-hsk.example.com/">
+    <meta property="og:title" content="Flashcard HSK - Learn Chinese">
+    <meta property="og:description" content="A modern flashcard app for learning Chinese vocabulary with Tinder-like swipe interface">
+    <meta property="og:image" content="./og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://flashcard-hsk.example.com/">
+    <meta property="twitter:title" content="Flashcard HSK - Learn Chinese">
+    <meta property="twitter:description" content="A modern flashcard app for learning Chinese vocabulary with Tinder-like swipe interface">
+    <meta property="twitter:image" content="./og-image.png">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#30D5C8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Flashcard HSK">
+    
+    <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Heroicons for modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    
+    <title>Flashcard HSK - Learn Chinese</title>
 </head>
-
 <body>
-
-
-    <div class="container">
-        <h1>Flashcard HSK3 🇨🇳</h1>
-        <p class="subtitle">Học Số Lượng và Hán Tự - Giao tiếp hàng ngày<br>Click vào thẻ để lật</p>
-
-        <div id="flashcard-container" class="flashcard">
-            <div class="card-inner" id="card-inner">
-                <div class="card-front">
-                    <div id="card-front">
-                        <!-- Nội dung mặt trước sẽ được JS thay đổi -->
-                    </div>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-layer-group"></i>
+                <span>Flashcard HSK</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="cards-learned">0</span>
+                    <span class="stat-label">Learned</span>
                 </div>
-                <div class="card-back">
-                    <div id="card-back">
-                        <!-- Nội dung mặt sau sẽ được JS thay đổi -->
-                    </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="total-cards">0</span>
+                    <span class="stat-label">Total</span>
                 </div>
             </div>
         </div>
+    </header>
 
-        <div class="controls">
-            <button id="flip-button">🔄 Lật thẻ</button>
-            <button id="next-button">Tiếp theo →</button>
+    <!-- Main Content -->
+    <main class="app-main">
+        <!-- React Settings Bar -->
+        <div id="react-settings-bar"></div>
+
+        <!-- Card Container -->
+        <div class="card-stack-container">
+            <div class="card-stack" id="cardStack">
+                <!-- Cards will be dynamically generated here -->
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn recall-btn" id="recall-button" aria-label="Mark as need to recall">
+                <div class="btn-icon-wrapper">
+                    <i class="fas fa-undo"></i>
+                </div>
+            </button>
+            <button class="action-btn flip-btn" id="flip-button" aria-label="Flip card">
+                <div class="btn-icon-wrapper">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </button>
+            <button class="action-btn remembered-btn" id="remembered-button" aria-label="Mark as remembered">
+                <div class="btn-icon-wrapper">
+                    <i class="fas fa-check"></i>
+                </div>
+            </button>
+        </div>
+    </main>
+
+    <!-- Offline Status Indicator -->
+    <div id="offline-indicator" class="offline-indicator">
+        <i class="fas fa-wifi-slash"></i>
+        <span>You're offline - Flashcard data is available locally</span>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Splash Screen -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="splash-content">
+            <div class="splash-icon" id="splash-icon"></div>
+            <div class="splash-text" id="splash-text"></div>
         </div>
     </div>
-    <script src="flashcard.js"></script>
+
+    <!-- No More Cards Screen -->
+    <div class="no-more-cards" id="no-more-cards" style="display: none;">
+        <div class="no-more-content">
+            <i class="fas fa-trophy"></i>
+            <h2>🎉 Congratulations!</h2>
+            <p>You've completed all the flashcards for this level. Keep practicing to improve your vocabulary!</p>
+            <button class="restart-btn" id="restartBtn">
+                <i class="fas fa-redo"></i>
+                Start Over
+            </button>
+        </div>
+    </div>
+
+    <!-- Install Button -->
+    <button class="install-btn" id="install-button" style="display: none;">
+        <i class="fas fa-download"></i>
+        Install App
+    </button>
+
+    <!-- Legacy Scripts for Flashcard Logic -->
+    <script type="module" src="./src/utils/flashcardApp.js"></script>
+    
+    <!-- React App Entry Point -->
+    <script type="module" src="./src/main.jsx"></script>
+    
+    <!-- Enhanced Service Worker and Offline Detection -->
     <script>
+        // Enhanced Service Worker Registration and Offline Detection
+        let isOnline = navigator.onLine;
+        let deferredPrompt;
+        
+        // Offline/Online status detection
+        function updateOnlineStatus() {
+            isOnline = navigator.onLine;
+            const offlineIndicator = document.getElementById('offline-indicator');
+            
+            if (!isOnline) {
+                offlineIndicator.classList.add('show');
+                console.log('App is offline - using cached data');
+            } else {
+                offlineIndicator.classList.remove('show');
+                console.log('App is online - syncing data');
+                // Trigger background sync when coming back online
+                if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        return registration.sync.register('background-sync-progress');
+                    });
+                }
+            }
+        }
+        
+        // Listen for online/offline events
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        
+        // Initialize online status
+        updateOnlineStatus();
+        
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/flashcard/sw.js', {
@@ -50,51 +182,103 @@
                 })
                     .then(registration => {
                         console.log('Service Worker registered with scope:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('New service worker found');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    if (confirm('A new version of Flashcard HSK is available. Would you like to update?')) {
+                                        newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                    }
+                                }
+                            });
+                        });
+                        
+                        // Listen for messages from service worker
+                        navigator.serviceWorker.addEventListener('message', event => {
+                            if (event.data && event.data.type === 'SYNC_PROGRESS') {
+                                console.log('Received sync request from service worker');
+                                // Trigger progress sync in the app
+                                window.dispatchEvent(new CustomEvent('syncProgress'));
+                            }
+                        });
                     })
                     .catch(error => {
                         console.error('Service Worker registration failed:', error);
                     });
             });
         }
-
-        let deferredPrompt;
-        const installButton = document.getElementById('installButton');
-
+        
+        // PWA Install Prompt
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the default mini-infobar from appearing on mobile
             e.preventDefault();
-            // Store the event for later use
             deferredPrompt = e;
-            // Show the install button
-            installButton.style.display = 'block';
-        });
-
-        installButton.addEventListener('click', () => {
-            if (deferredPrompt) {
-                // Show the install prompt
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    } else {
-                        console.log('User dismissed the install prompt');
-                    }
-                    // Clear the deferred prompt
-                    deferredPrompt = null;
-                    // Hide the install button
-                    installButton.style.display = 'none';
-                });
+            
+            // Show install button or banner
+            const installBtn = document.getElementById('install-button');
+            if (installBtn) {
+                installBtn.style.display = 'block';
             }
         });
-
+        
+        // Install button click handler
+        const installButton = document.getElementById('install-button');
+        if (installButton) {
+            installButton.addEventListener('click', () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        } else {
+                            console.log('User dismissed the install prompt');
+                        }
+                        deferredPrompt = null;
+                        installButton.style.display = 'none';
+                    });
+                }
+            });
+        }
+        
         // Detect when the app is installed
         window.addEventListener('appinstalled', () => {
             console.log('PWA was installed');
-            installButton.style.display = 'none';
+            const installButton = document.getElementById('install-button');
+            if (installButton) {
+                installButton.style.display = 'none';
+            }
+        });
+        
+        // Request persistent storage for better offline experience
+        async function requestPersistentStorage() {
+            if ('storage' in navigator && 'persist' in navigator.storage) {
+                try {
+                    const isPersistent = await navigator.storage.persist();
+                    console.log('Persistent storage granted:', isPersistent);
+                    return isPersistent;
+                } catch (error) {
+                    console.error('Failed to request persistent storage:', error);
+                    return false;
+                }
+            }
+            return false;
+        }
+        
+        // Initialize storage features
+        requestPersistentStorage();
+        
+        // Handle visibility change to sync data when app becomes visible
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && isOnline) {
+                console.log('App became visible, checking for updates');
+                // Trigger data sync when app becomes visible
+                window.dispatchEvent(new CustomEvent('syncData'));
+            }
         });
     </script>
-
 </body>
-
 </html>

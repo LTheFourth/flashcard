@@ -1,29 +1,77 @@
 {
-  "name": "Flashcard HSK3",
-  "short_name": "Flashcard",
-  "description": "Learn Chinese HSK3 vocabulary with interactive flashcards",
+  "name": "Flashcard HSK - Learn Chinese Offline",
+  "short_name": "Flashcard HSK",
+  "description": "Learn Chinese HSK vocabulary with interactive flashcards - works offline",
   "start_url": "/flashcard/",
   "scope": "/flashcard/",
   "display": "standalone",
-  "background_color": "#667eea",
-  "theme_color": "#667eea",
+  "background_color": "#30D5C8",
+  "theme_color": "#30D5C8",
   "orientation": "any",
+  "categories": ["education", "productivity"],
+  "lang": "en",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
-             {
-                 "src": "/flashcard/android/android-launchericon-192-192.png",
-                 "sizes": "192x192",
-                 "type": "image/png"
-             },
-             {
-                 "src": "/flashcard/android/android-launchericon-512-512.png",
-                 "sizes": "512x512",
-                 "type": "image/png"
-             },
-             {
-                 "src": "/flashcard/android/android-launchericon-512-512.png",
-                 "sizes": "512x512",
-                 "type": "image/png",
-                 "purpose": "maskable"
-             }
-         ]
+    {
+      "src": "/flashcard/android/android-launchericon-72-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-96-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-128-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-144-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-152-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-192-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-384-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-512-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/flashcard/android/android-launchericon-512-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/flashcard/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/flashcard/screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ]
 }
