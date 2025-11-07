@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+# Sets permissions for deployment
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
