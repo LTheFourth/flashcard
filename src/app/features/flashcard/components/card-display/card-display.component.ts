@@ -1,5 +1,6 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { StateService } from '../../../../core/services/state.service';
 import { Flashcard } from '../../../../core/services/flashcard.service';
 import { StorageService } from '../../../../core/services/storage.service';
@@ -298,8 +299,8 @@ import { StorageService } from '../../../../core/services/storage.service';
         <!-- Position + stats row -->
         <div class="position-row">
           <span class="position-text">{{ currentIndex + 1 }} · {{ totalCards }}</span>
-          <span class="stat-pill recall-pill">↩ {{ cardState.recalled }}</span>
-          <span class="stat-pill remember-pill">✓ {{ cardState.remembered }}</span>
+          <span class="stat-pill recall-pill">↩ {{ cardState().recalled }}</span>
+          <span class="stat-pill remember-pill">✓ {{ cardState().remembered }}</span>
         </div>
 
         <!-- Card scene -->
@@ -378,6 +379,11 @@ export class CardDisplayComponent {
 
   private state = inject(StateService);
   private storage = inject(StorageService);
+
+  // ── reactive observables as signals ────────────────────────────────────
+  private currentLevelSignal = toSignal(this.state.currentLevel$, { initialValue: 'hsk3' });
+  private currentIndexSignal = toSignal(this.state.currentCardIndex$, { initialValue: 0 });
+  private cardQueueSignal = toSignal(this.state.cardQueue$, { initialValue: [] });
 
   // ── flip state ──────────────────────────────────────────────────────────
   isFlipped = signal(false);
@@ -548,22 +554,27 @@ export class CardDisplayComponent {
   }
 
   get currentCard(): Flashcard | null {
-    const queue = this.state.cardQueue$.value;
-    const idx = this.state.currentCardIndex$.value;
+    const queue = this.cardQueueSignal();
+    const idx = this.currentIndexSignal();
     return queue[idx] ?? null;
   }
 
   get currentIndex(): number {
-    return this.state.currentCardIndex$.value;
+    return this.currentIndexSignal();
   }
 
   get totalCards(): number {
-    return this.state.cardQueue$.value.length;
+    return this.cardQueueSignal().length;
   }
 
-  get cardState() {
-    const card = this.currentCard;
+  /** Reactive card state (recall/remember counts) — computed from current card */
+  cardState = computed(() => {
+    const queue = this.cardQueueSignal();
+    const idx = this.currentIndexSignal();
+    const card = queue[idx] ?? null;
+    const level = this.currentLevelSignal();
+
     if (!card) return { recalled: 0, remembered: 0 };
-    return this.storage.getState(this.state.currentLevel$.value, card.chinese);
-  }
+    return this.storage.getState(level, card.chinese);
+  });
 }

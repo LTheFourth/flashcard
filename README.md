@@ -1,175 +1,59 @@
-# Flashcard HSK - Learn Chinese
+# Flashcard
 
-A modern flashcard app for learning Chinese vocabulary with Tinder-like swipe interface.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
 
-## Features
+## Development server
 
-- 🎯 **HSK 3 & HSK 4 Vocabulary**: Comprehensive vocabulary sets for HSK levels
-- 🔄 **Tinder-like Swipe Interface**: Intuitive swipe gestures for learning
-- 🌐 **Dual Language Support**: Switch between Chinese-first and Vietnamese-first modes
-- 📊 **Progress Tracking**: Monitor your learning progress and statistics
-- 🎨 **Modern UI**: Beautiful gradient design with smooth animations
-- ⚡ **Performance Optimized**: Built with Vite for fast development and builds
-- 📱 **PWA Ready**: Install as a native app on mobile devices
-- 🧩 **Component-Based**: Clean React component architecture
-
-## Tech Stack
-
-- **Frontend**: React 18, Vite, CSS3
-- **UI Library**: Ant Design (optional fallback)
-- **Build Tool**: Vite with optimized bundling
-- **Code Quality**: ESLint, Prettier
-- **PWA**: Service Worker with offline support
-
-## Quick Start
-
-### Prerequisites
-
-- Node.js 16+ 
-- npm 8+
-
-### Installation
+To start a local development server, run:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd flashcard-hsk
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+ng serve
 ```
 
-### Development
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+
+## Code scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
 ```bash
-# Start development server with hot reload
-npm run dev
-
-# Run linting
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code
-npm run format
+ng generate component component-name
 ```
 
-### Build & Deploy
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
 ```bash
-# Build for production
-npm run build
-
-# Build for GitHub Pages (with correct base path)
-npm run build:gh
-
-# Preview production build
-npm run preview
-
-# Preview GitHub Pages build locally
-npm run preview:gh
-
-# Deploy to GitHub Pages manually
-npm run deploy
-
-# Analyze bundle size
-npm run analyze
-
-# Clean build directory
-npm run clean
+ng generate --help
 ```
 
-## 🚀 GitHub Pages Deployment
+## Building
 
-### Automatic Deployment
-
-This project is configured for automatic deployment to GitHub Pages:
-
-1. **Push to main branch**: The app automatically builds and deploys
-2. **Pull requests**: Builds and runs tests but doesn't deploy  
-3. **Live URL**: https://lthefourth.github.io/flashcard/
-
-The workflow `.github/workflows/deploy.yml` handles:
-- Building the app with correct base path (`/flashcard/`)
-- Deploying to GitHub Pages
-- Running on every push to main branch
-
-### Manual Deployment
+To build the project run:
 
 ```bash
-# Deploy manually to GitHub Pages
-npm run deploy
+ng build
 ```
 
-### Local Testing
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+
+## Running unit tests
+
+To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
 
 ```bash
-# Test GitHub Pages build locally
-npm run preview:gh
-# Opens at http://localhost:3000/flashcard/
+ng test
 ```
 
-## Project Structure
+## Running end-to-end tests
 
-```
-flashcard-hsk/
-├── src/
-│   ├── components/          # React components
-│   │   ├── HSKLevelSelector.jsx
-│   │   ├── LanguageToggle.jsx
-│   │   ├── ActionButtons.jsx
-│   │   └── Instructions.jsx
-│   ├── utils/              # Utility functions
-│   │   └── flashcardApp.js  # Main flashcard logic
-│   ├── styles/             # CSS styles
-│   │   └── index.css
-│   ├── assets/             # Static assets
-│   ├── App.jsx             # Main React app
-│   └── main.jsx            # React entry point
-├── public/                 # Public assets
-├── dist/                   # Build output
-├── package.json            # Dependencies and scripts
-├── vite.config.js          # Vite configuration
-├── .eslintrc.json          # ESLint configuration
-├── .prettierrc             # Prettier configuration
-└── README.md               # This file
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
 ```
 
-## Performance Optimizations
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-- **Code Splitting**: Automatic chunk splitting for vendor libraries
-- **Tree Shaking**: Dead code elimination
-- **CSS Optimization**: Minification and autoprefixing
-- **Asset Optimization**: Image and font optimization
-- **PWA Caching**: Service worker for offline functionality
-- **Bundle Analysis**: Built-in bundle size analyzer
+## Additional Resources
 
-## Browser Support
-
-- Chrome 80+
-- Firefox 78+
-- Safari 14+
-- Edge 80+
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- React team for the amazing framework
-- Vite team for the blazing fast build tool
-- Ant Design for the UI components
-- Font Awesome for the beautiful icons
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

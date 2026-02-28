@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StateService, HSK_LEVELS, HskLevel, LanguageMode } from '../../../../core/services/state.service';
 
@@ -16,19 +16,23 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 12px;
       padding: 10px 16px;
       background: var(--surface);
       border-bottom: 1px solid var(--divider);
       flex-shrink: 0;
     }
-    .level-group {
+
+    /* ── HSK Level Dropdown ── */
+    .level-dropdown {
+      position: relative;
       display: flex;
-      gap: 4px;
+      flex-direction: column;
     }
+
     .level-btn {
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
       border: 1px solid var(--divider);
       background: transparent;
       color: var(--on-dark-muted);
@@ -37,17 +41,74 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
       font-weight: 600;
       letter-spacing: 0.03em;
       cursor: pointer;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
+
+    .level-btn:hover {
+      background: var(--surface-2);
+      color: var(--on-dark);
+    }
+
     .level-btn.active {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
-    .level-btn:not(.active):hover {
+
+    .dropdown-arrow {
+      font-size: 10px;
+      opacity: 0.6;
+      transition: transform 0.2s;
+    }
+
+    .level-btn.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* ── Dropdown Menu ── */
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--divider);
+      background: var(--surface);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      min-width: 120px;
+      overflow: hidden;
+    }
+
+    .menu-item {
+      padding: 10px 16px;
+      font-family: 'Crimson Pro', serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      color: var(--on-dark-muted);
+      cursor: pointer;
+      transition: all 0.12s;
+      text-align: left;
+    }
+
+    .menu-item:hover {
       background: var(--surface-2);
       color: var(--on-dark);
     }
+
+    .menu-item.selected {
+      background: var(--accent-pale);
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+      padding-left: 13px;
+    }
+
+    /* ── Language Toggle ── */
     .lang-btn {
       padding: 6px 10px;
       border-radius: 6px;
@@ -58,13 +119,16 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
       font-size: 11px;
       letter-spacing: 0.04em;
       cursor: pointer;
-      transition: background 0.15s, color 0.15s;
+      transition: all 0.15s;
       white-space: nowrap;
     }
+
     .lang-btn:hover {
       background: var(--surface-2);
       color: var(--on-dark);
     }
+
+    /* ── Reset Button ── */
     .reset-btn {
       padding: 6px 10px;
       border-radius: 6px;
@@ -76,8 +140,9 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
       font-weight: 400;
       letter-spacing: 0.04em;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
     }
+
     .reset-btn:hover {
       background: var(--accent-pale);
     }
@@ -85,18 +150,34 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
   template: `
     <div class="bar">
 
-      <div class="level-group">
-        @for (level of hskLevels; track level) {
-          <button
-            (click)="selectLevel(level)"
-            class="level-btn"
-            [class.active]="currentLevel === level"
-          >
-            {{ levelLabel(level) }}
-          </button>
+      <!-- HSK Level Dropdown -->
+      <div class="level-dropdown">
+        <button
+          class="level-btn"
+          [class.active]="true"
+          [class.open]="isDropdownOpen()"
+          (click)="toggleDropdown()"
+        >
+          {{ levelLabel(currentLevel) }}
+          <span class="dropdown-arrow">▼</span>
+        </button>
+
+        @if (isDropdownOpen()) {
+          <div class="dropdown-menu">
+            @for (level of hskLevels; track level) {
+              <div
+                class="menu-item"
+                [class.selected]="level === currentLevel"
+                (click)="selectLevel(level); closeDropdown()"
+              >
+                {{ levelLabel(level) }}
+              </div>
+            }
+          </div>
         }
       </div>
 
+      <!-- Language Toggle -->
       <button
         (click)="toggleLanguage()"
         class="lang-btn"
@@ -105,6 +186,7 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
         {{ currentLanguageLabel }}
       </button>
 
+      <!-- Reset Button -->
       <button
         (click)="reset()"
         class="reset-btn"
@@ -120,6 +202,7 @@ export class ControllerBarComponent {
   private state = inject(StateService);
 
   readonly hskLevels = HSK_LEVELS;
+  readonly isDropdownOpen = signal(false);
 
   get currentLevel(): HskLevel {
     return this.state.currentLevel$.value;
@@ -137,6 +220,14 @@ export class ControllerBarComponent {
 
   levelLabel(level: HskLevel): string {
     return level.replace('hsk', 'HSK ');
+  }
+
+  toggleDropdown(): void {
+    this.isDropdownOpen.update((v) => !v);
+  }
+
+  closeDropdown(): void {
+    this.isDropdownOpen.set(false);
   }
 
   selectLevel(level: HskLevel): void {
