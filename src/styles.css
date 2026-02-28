@@ -1,0 +1,44 @@
+@import 'tailwindcss';
+
+/* Fonts loaded via <link> in index.html: Noto Serif SC, Crimson Pro, Courier Prime */
+
+:root {
+  --bg: #0d0c0a;
+  --surface: #161412;
+  --surface-2: #1e1b17;
+  --card-face: #faf7f2;
+  --card-back: #f0e8d8;
+  --accent: #c94f2d;
+  --accent-pale: rgba(201, 79, 45, 0.12);
+  --green: #3a7c56;
+  --green-pale: rgba(58, 124, 86, 0.12);
+  --ink: #1c1510;
+  --ink-muted: #6b5d52;
+  --ink-faint: #9b8e85;
+  --on-dark: #e4d9cc;
+  --on-dark-muted: #7a6f65;
+  --divider: rgba(255, 255, 255, 0.07);
+}
+
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--on-dark);
+  font-family: 'Crimson Pro', Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+}

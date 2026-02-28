@@ -1,0 +1,58 @@
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { StateService } from './core/services/state.service';
+import { ControllerBarComponent } from './features/flashcard/components/controller-bar/controller-bar.component';
+import { CardDisplayComponent } from './features/flashcard/components/card-display/card-display.component';
+import { ControlAreaComponent } from './features/flashcard/components/control-area/control-area.component';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [CommonModule, ControllerBarComponent, CardDisplayComponent, ControlAreaComponent],
+  styles: [`
+    .shell {
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+    .offline-banner {
+      background: var(--accent);
+      color: rgba(255, 255, 255, 0.92);
+      font-family: 'Courier Prime', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-align: center;
+      padding: 7px 16px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+  `],
+  template: `
+    <div class="shell">
+
+      @if (isOffline) {
+        <div class="offline-banner">Offline — cached cards</div>
+      }
+
+      <app-controller-bar />
+      <app-card-display #cardDisplay class="flex-1 flex flex-col" />
+      <app-control-area (onFlipReset)="cardDisplay.resetFlip()" />
+
+    </div>
+  `,
+})
+export class AppComponent implements OnInit {
+  @ViewChild('cardDisplay') cardDisplay!: CardDisplayComponent;
+
+  private state = inject(StateService);
+
+  get isOffline(): boolean {
+    return this.state.isOffline$.value;
+  }
+
+  ngOnInit(): void {
+    this.state.loadCards(this.state.currentLevel$.value);
+  }
+}
