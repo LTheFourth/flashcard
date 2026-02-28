@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StateService } from '../../../../core/services/state.service';
 import { Flashcard } from '../../../../core/services/flashcard.service';
@@ -92,22 +92,39 @@ import { StorageService } from '../../../../core/services/storage.service';
       max-width: 360px;
       flex: 1;
       min-height: 0;
-      cursor: pointer;
-      /* grab all pointer events; prevent browser from intercepting swipes */
+      /* disable default browser touch handling so pointermove fires cleanly */
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
     }
+
+    /*
+     * card-inner handles BOTH the drag transform (translateX + rotate)
+     * AND the flip transform (rotateY).
+     *
+     * While dragging: transition is off so it follows the finger in real time.
+     * On release (snap-back or fly-off): transition turns back on.
+     * On flip click: transition is on, drag offset is 0.
+     */
     .card-inner {
       position: relative;
       width: 100%;
       height: 100%;
-      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
       transform-style: preserve-3d;
+      /* default: smooth transitions for flip & snap-back */
+      transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
     }
+    /* While user is actively dragging — disable transition for real-time follow */
+    .card-inner.dragging {
+      transition: none;
+    }
+    /* Flip state — applied on top of whatever drag offset is set inline */
     .card-inner.flipped {
-      transform: rotateY(180deg);
+      /* flipped class adds rotateY(180deg) via inline style in the template
+         so we don't override drag offset here */
     }
+
     .card-face {
       position: absolute;
       inset: 0;
@@ -117,30 +134,33 @@ import { StorageService } from '../../../../core/services/storage.service';
       overflow: hidden;
     }
 
-    /* ---------- swipe feedback overlay ---------- */
-    .swipe-overlay {
+    /* ---------- swipe direction badge ---------- */
+    .swipe-badge {
       position: absolute;
-      inset: 0;
+      top: 20px;
       z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 18px;
-      pointer-events: none;
+      padding: 4px 14px;
+      border-radius: 8px;
+      border: 2px solid;
       font-family: 'Crimson Pro', serif;
-      font-size: 1.4rem;
+      font-size: 1rem;
       font-weight: 600;
-      letter-spacing: 0.06em;
-      animation: fadeIn 0.1s ease;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      pointer-events: none;
+      /* opacity driven by swipe progress — set via inline style */
     }
-    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-    .overlay-recall {
-      background: rgba(201, 79, 45, 0.18);
+    .badge-recall {
+      left: 16px;
       color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(201, 79, 45, 0.1);
     }
-    .overlay-remember {
-      background: rgba(58, 124, 86, 0.18);
+    .badge-remember {
+      right: 16px;
       color: var(--green);
+      border-color: var(--green);
+      background: rgba(58, 124, 86, 0.1);
     }
 
     /* ---------- front face ---------- */
@@ -282,34 +302,49 @@ import { StorageService } from '../../../../core/services/storage.service';
           <span class="stat-pill remember-pill">✓ {{ cardState.remembered }}</span>
         </div>
 
-        <!-- Card scene — tap to flip, swipe to recall/remember -->
+        <!-- Card scene -->
         <div
           class="card-scene"
+          #cardScene
           (pointerdown)="onPointerDown($event)"
+          (pointermove)="onPointerMove($event)"
           (pointerup)="onPointerUp($event)"
+          (pointercancel)="snapBack()"
         >
-          <!-- Swipe feedback overlay -->
-          @if (swipeState() !== 'idle') {
-            <div
-              class="swipe-overlay"
-              [class.overlay-recall]="swipeState() === 'left'"
-              [class.overlay-remember]="swipeState() === 'right'"
-            >
-              {{ swipeState() === 'left' ? '← Recall' : 'Remember →' }}
-            </div>
-          }
+          <!--
+            card-inner transform combines:
+            - drag: translateX + rotate (set via inline style while dragging)
+            - flip: rotateY(180deg) appended when card is flipped
+            Both live in one transform string to avoid conflicts.
+          -->
+          <div
+            #cardInner
+            class="card-inner"
+            [class.dragging]="isDragging()"
+            [style.transform]="cardTransform()"
+          >
 
-          <div class="card-inner" [class.flipped]="isFlipped()">
+            <!-- Recall badge (left side, fades in while dragging left) -->
+            <div
+              class="swipe-badge badge-recall"
+              [style.opacity]="recallBadgeOpacity()"
+            >Recall</div>
+
+            <!-- Remember badge (right side, fades in while dragging right) -->
+            <div
+              class="swipe-badge badge-remember"
+              [style.opacity]="rememberBadgeOpacity()"
+            >Remember</div>
 
             <!-- Front face -->
             <div class="card-face card-front">
               @if (isChinese) {
                 <span class="hanzi">{{ currentCard.chinese }}</span>
-                <span class="tap-hint">tap to reveal</span>
+                <span class="tap-hint">tap to reveal · swipe to score</span>
               } @else {
                 <span class="viet-front">{{ currentCard.vietnamese }}</span>
                 <span class="pinyin-front">{{ currentCard.pinyin }}</span>
-                <span class="tap-hint">tap to reveal</span>
+                <span class="tap-hint">tap to reveal · swipe to score</span>
               }
             </div>
 
@@ -339,15 +374,166 @@ import { StorageService } from '../../../../core/services/storage.service';
   `,
 })
 export class CardDisplayComponent {
+  @ViewChild('cardScene') cardSceneRef!: ElementRef<HTMLElement>;
+
   private state = inject(StateService);
   private storage = inject(StorageService);
 
+  // ── flip state ──────────────────────────────────────────────────────────
   isFlipped = signal(false);
-  swipeState = signal<'idle' | 'left' | 'right'>('idle');
+
+  // ── drag state ──────────────────────────────────────────────────────────
+  isDragging = signal(false);
+
+  /** Current horizontal drag offset in px */
+  private dragX = 0;
 
   private startX = 0;
   private startY = 0;
-  private readonly SWIPE_THRESHOLD = 60;
+
+  /**
+   * How far the card must be dragged (px) to count as a swipe decision.
+   * At this point the card flies off; below it snaps back.
+   */
+  private readonly THRESHOLD = 80;
+
+  /**
+   * Max tilt angle (degrees) at the swipe threshold.
+   * The card rotates proportionally up to this value.
+   */
+  private readonly MAX_ROTATE = 18;
+
+  // ── computed display values ──────────────────────────────────────────────
+
+  /** Combined CSS transform: drag offset + flip state. */
+  cardTransform(): string {
+    const tx = this.dragX;
+    // Tilt: proportional to drag, clamped to ±MAX_ROTATE
+    const rot = Math.min(Math.max((tx / this.THRESHOLD) * this.MAX_ROTATE, -this.MAX_ROTATE), this.MAX_ROTATE);
+    const flip = this.isFlipped() ? ' rotateY(180deg)' : '';
+    if (tx === 0) return `rotateY(${this.isFlipped() ? '180deg' : '0deg'})`;
+    return `translateX(${tx}px) rotate(${rot}deg)${flip}`;
+  }
+
+  /** Opacity 0→1 as card drags left (recall direction). */
+  recallBadgeOpacity(): number {
+    if (this.dragX >= 0) return 0;
+    return Math.min(Math.abs(this.dragX) / this.THRESHOLD, 1);
+  }
+
+  /** Opacity 0→1 as card drags right (remember direction). */
+  rememberBadgeOpacity(): number {
+    if (this.dragX <= 0) return 0;
+    return Math.min(this.dragX / this.THRESHOLD, 1);
+  }
+
+  // ── pointer handlers ─────────────────────────────────────────────────────
+
+  onPointerDown(event: PointerEvent): void {
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+    this.dragX = 0;
+    // Capture so pointermove/up fire even if pointer leaves the element
+    (event.currentTarget as Element).setPointerCapture(event.pointerId);
+  }
+
+  onPointerMove(event: PointerEvent): void {
+    if (!event.buttons) return; // pointer not pressed
+
+    const dx = event.clientX - this.startX;
+    const dy = event.clientY - this.startY;
+
+    // Only start dragging once we confirm horizontal intent
+    if (!this.isDragging() && Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+
+    // Lock into drag mode only if horizontal movement dominates
+    if (!this.isDragging()) {
+      if (Math.abs(dx) < Math.abs(dy)) return; // vertical scroll — don't hijack
+      this.isDragging.set(true);
+    }
+
+    this.dragX = dx;
+  }
+
+  onPointerUp(event: PointerEvent): void {
+    if (!this.isDragging()) {
+      // It was a tap — flip the card
+      const dx = event.clientX - this.startX;
+      const dy = event.clientY - this.startY;
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+        this.flip();
+      }
+      return;
+    }
+
+    const dx = this.dragX;
+    this.isDragging.set(false);
+
+    if (dx < -this.THRESHOLD) {
+      this.flyOff('left');
+    } else if (dx > this.THRESHOLD) {
+      this.flyOff('right');
+    } else {
+      this.snapBack();
+    }
+  }
+
+  // ── animations ──────────────────────────────────────────────────────────
+
+  snapBack(): void {
+    this.isDragging.set(false);
+    this.dragX = 0;
+    // transition is back on (dragging class removed), so the snap is animated
+  }
+
+  private flyOff(direction: 'left' | 'right'): void {
+    // Push the card well off screen — transition handles the animation
+    const target = direction === 'left' ? -600 : 600;
+    this.dragX = target;
+
+    // After the fly-off animation completes, process the action and reset
+    setTimeout(() => {
+      if (direction === 'left') {
+        this.doRecall();
+      } else {
+        this.doRemember();
+      }
+      // Instantly reposition (no transition) then restore transition
+      this.isDragging.set(true);  // kill transition briefly
+      this.dragX = 0;
+      requestAnimationFrame(() => {
+        this.isDragging.set(false); // restore transition
+      });
+    }, 320);
+  }
+
+  // ── card actions ─────────────────────────────────────────────────────────
+
+  flip(): void {
+    this.isFlipped.update((v) => !v);
+  }
+
+  resetFlip(): void {
+    this.isFlipped.set(false);
+  }
+
+  private doRecall(): void {
+    const card = this.currentCard;
+    if (!card) return;
+    this.storage.incrementRecalled(this.state.currentLevel$.value, card.chinese);
+    this.resetFlip();
+    this.state.nextCard();
+  }
+
+  private doRemember(): void {
+    const card = this.currentCard;
+    if (!card) return;
+    this.storage.incrementRemembered(this.state.currentLevel$.value, card.chinese);
+    this.resetFlip();
+    this.state.nextCard();
+  }
+
+  // ── getters ──────────────────────────────────────────────────────────────
 
   get isChinese(): boolean {
     return this.state.languageMode$.value === 'chinese';
@@ -379,55 +565,5 @@ export class CardDisplayComponent {
     const card = this.currentCard;
     if (!card) return { recalled: 0, remembered: 0 };
     return this.storage.getState(this.state.currentLevel$.value, card.chinese);
-  }
-
-  onPointerDown(event: PointerEvent): void {
-    this.startX = event.clientX;
-    this.startY = event.clientY;
-    (event.currentTarget as Element).setPointerCapture(event.pointerId);
-  }
-
-  onPointerUp(event: PointerEvent): void {
-    const dx = event.clientX - this.startX;
-    const dy = event.clientY - this.startY;
-    const isHorizontal = Math.abs(dx) > Math.abs(dy);
-
-    if (isHorizontal && Math.abs(dx) > this.SWIPE_THRESHOLD) {
-      // Swipe gesture
-      if (dx < 0) {
-        this.swipeState.set('left');
-        setTimeout(() => { this.doRecall(); this.swipeState.set('idle'); }, 250);
-      } else {
-        this.swipeState.set('right');
-        setTimeout(() => { this.doRemember(); this.swipeState.set('idle'); }, 250);
-      }
-    } else if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
-      // Tap — flip the card
-      this.flip();
-    }
-  }
-
-  flip(): void {
-    this.isFlipped.update((v) => !v);
-  }
-
-  resetFlip(): void {
-    this.isFlipped.set(false);
-  }
-
-  private doRecall(): void {
-    const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRecalled(this.state.currentLevel$.value, card.chinese);
-    this.resetFlip();
-    this.state.nextCard();
-  }
-
-  private doRemember(): void {
-    const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRemembered(this.state.currentLevel$.value, card.chinese);
-    this.resetFlip();
-    this.state.nextCard();
   }
 }
