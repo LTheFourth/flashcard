@@ -386,6 +386,8 @@ export class CardDisplayComponent {
   private currentLevelSignal = toSignal(this.state.currentLevel$, { initialValue: 'hsk3' });
   private currentIndexSignal = toSignal(this.state.currentCardIndex$, { initialValue: 0 });
   private cardQueueSignal = toSignal(this.state.cardQueue$, { initialValue: [] });
+  private isLoadingSignal = toSignal(this.state.isLoading$, { initialValue: false });
+  private hasErrorSignal = toSignal(this.state.hasError$, { initialValue: false });
 
   // ── flip state ──────────────────────────────────────────────────────────
   isFlipped = signal(false);
@@ -548,11 +550,11 @@ export class CardDisplayComponent {
   }
 
   get isLoading(): boolean {
-    return this.state.isLoading$.value;
+    return this.isLoadingSignal();
   }
 
   get hasError(): boolean {
-    return this.state.hasError$.value;
+    return this.hasErrorSignal();
   }
 
   get currentCard(): Flashcard | null {
