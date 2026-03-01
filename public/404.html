@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Flashcard</title>
+  </head>
+  <body>
+    <script>
+      // GitHub Pages SPA routing fallback
+      // Preserve the requested path and redirect to index.html
+      (function() {
+        const redirect = sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          sessionStorage.redirect = '';
+          location.replace(redirect);
+        }
+      })();
+    </script>
+    <script>
+      // Store the full path for restoration
+      if (!sessionStorage.redirect) {
+        sessionStorage.redirect = location.href;
+      }
+      // Redirect to index.html
+      location.replace('/flashcard/');
+    </script>
+  </body>
+</html>

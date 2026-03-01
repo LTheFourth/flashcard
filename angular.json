@@ -68,6 +68,7 @@
                   "maximumError": "8kB"
                 }
               ],
+              "baseHref": "/flashcard/",
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json"
             },
