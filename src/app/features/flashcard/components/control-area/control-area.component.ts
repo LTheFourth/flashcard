@@ -78,7 +78,7 @@ export class ControlAreaComponent {
   recall(): void {
     const card = this.currentCard;
     if (!card) return;
-    this.storage.incrementRecalled(this.state.currentLevel$.value, card.chinese);
+    this.storage.incrementRecalled(this.state.currentLevel$.value, card.id);
     this.onFlipReset.emit();
     this.state.nextCard();
   }
@@ -86,7 +86,7 @@ export class ControlAreaComponent {
   remember(): void {
     const card = this.currentCard;
     if (!card) return;
-    this.storage.incrementRemembered(this.state.currentLevel$.value, card.chinese);
+    this.storage.incrementRemembered(this.state.currentLevel$.value, card.id);
     this.onFlipReset.emit();
     this.state.nextCard();
   }

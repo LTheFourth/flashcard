@@ -530,7 +530,7 @@ export class CardDisplayComponent {
   private doRecall(): void {
     const card = this.currentCard;
     if (!card) return;
-    this.storage.incrementRecalled(this.state.currentLevel$.value, card.chinese);
+    this.storage.incrementRecalled(this.state.currentLevel$.value, card.id);
     this.resetFlip();
     this.state.nextCard();
   }
@@ -538,7 +538,7 @@ export class CardDisplayComponent {
   private doRemember(): void {
     const card = this.currentCard;
     if (!card) return;
-    this.storage.incrementRemembered(this.state.currentLevel$.value, card.chinese);
+    this.storage.incrementRemembered(this.state.currentLevel$.value, card.id);
     this.resetFlip();
     this.state.nextCard();
   }
@@ -579,6 +579,6 @@ export class CardDisplayComponent {
     const level = this.currentLevelSignal();
 
     if (!card) return { recalled: 0, remembered: 0 };
-    return this.storage.getState(level, card.chinese);
+    return this.storage.getState(level, card.id);
   });
 }

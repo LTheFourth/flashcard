@@ -79,8 +79,8 @@ export class StateService {
    */
   private sortByFrequency(cards: Flashcard[], level: string): Flashcard[] {
     return [...cards].sort((a, b) => {
-      const sa = this.storageService.getState(level, a.chinese);
-      const sb = this.storageService.getState(level, b.chinese);
+      const sa = this.storageService.getState(level, a.id);
+      const sb = this.storageService.getState(level, b.id);
       const wa = sa.recalled - sa.remembered;
       const wb = sb.recalled - sb.remembered;
       return wb - wa;

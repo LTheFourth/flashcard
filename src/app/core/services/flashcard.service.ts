@@ -5,12 +5,25 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { openDB, IDBPDatabase } from 'idb';
 
 export interface Flashcard {
+  id: string;          // stable identifier: base-36 hash of chinese characters
   chinese: string;
   pinyin: string;
   vietnamese: string;
   example: string;
   example_vi: string;
   level?: string;
+}
+
+/** Raw shape returned by the API (no id, no level) */
+type FlashcardPayload = Omit<Flashcard, 'id' | 'level'>;
+
+/** Deterministic base-36 hash of Chinese characters — stable across app restarts */
+function generateId(chinese: string): string {
+  let h = 5381;
+  for (let i = 0; i < chinese.length; i++) {
+    h = (Math.imul(h, 33) ^ chinese.charCodeAt(i)) | 0;
+  }
+  return (h >>> 0).toString(36);
 }
 
 const API_BASE = 'https://flashcard-be-eight.vercel.app';
@@ -20,25 +33,25 @@ const STORE_NAME = 'flashcards';
 
 const MOCK_DATA: Record<string, Flashcard[]> = {
   hsk3: [
-    { chinese: '安静', pinyin: 'ānjìng', vietnamese: 'yên tĩnh', example: '请保持安静。', example_vi: 'Xin hãy giữ im lặng.' },
-    { chinese: '办法', pinyin: 'bànfǎ', vietnamese: 'cách, biện pháp', example: '我有一个好办法。', example_vi: 'Tôi có một cách hay.' },
-    { chinese: '参加', pinyin: 'cānjiā', vietnamese: 'tham gia', example: '我想参加这个活动。', example_vi: 'Tôi muốn tham gia hoạt động này.' },
-    { chinese: '地方', pinyin: 'dìfāng', vietnamese: 'nơi chốn, địa phương', example: '这个地方很美。', example_vi: 'Nơi này rất đẹp.' },
-    { chinese: '发现', pinyin: 'fāxiàn', vietnamese: 'phát hiện', example: '我发现了一个秘密。', example_vi: 'Tôi đã phát hiện ra một bí mật.' },
+    { id: generateId('安静'), chinese: '安静', pinyin: 'ānjìng', vietnamese: 'yên tĩnh', example: '请保持安静。', example_vi: 'Xin hãy giữ im lặng.' },
+    { id: generateId('办法'), chinese: '办法', pinyin: 'bànfǎ', vietnamese: 'cách, biện pháp', example: '我有一个好办法。', example_vi: 'Tôi có một cách hay.' },
+    { id: generateId('参加'), chinese: '参加', pinyin: 'cānjiā', vietnamese: 'tham gia', example: '我想参加这个活动。', example_vi: 'Tôi muốn tham gia hoạt động này.' },
+    { id: generateId('地方'), chinese: '地方', pinyin: 'dìfāng', vietnamese: 'nơi chốn, địa phương', example: '这个地方很美。', example_vi: 'Nơi này rất đẹp.' },
+    { id: generateId('发现'), chinese: '发现', pinyin: 'fāxiàn', vietnamese: 'phát hiện', example: '我发现了一个秘密。', example_vi: 'Tôi đã phát hiện ra một bí mật.' },
   ],
   hsk4: [
-    { chinese: '爱护', pinyin: 'àihù', vietnamese: 'yêu quý, bảo vệ', example: '我们要爱护环境。', example_vi: 'Chúng ta phải bảo vệ môi trường.' },
-    { chinese: '摆', pinyin: 'bǎi', vietnamese: 'đặt, bày', example: '把书摆在桌子上。', example_vi: 'Đặt sách lên bàn.' },
-    { chinese: '采用', pinyin: 'cǎiyòng', vietnamese: 'áp dụng, sử dụng', example: '我们采用了新技术。', example_vi: 'Chúng tôi đã áp dụng công nghệ mới.' },
-    { chinese: '大概', pinyin: 'dàgài', vietnamese: 'đại khái, khoảng', example: '大概需要一个小时。', example_vi: 'Cần khoảng một giờ.' },
-    { chinese: '否则', pinyin: 'fǒuzé', vietnamese: 'nếu không, bằng không', example: '快点，否则会迟到。', example_vi: 'Nhanh lên, nếu không sẽ bị muộn.' },
+    { id: generateId('爱护'), chinese: '爱护', pinyin: 'àihù', vietnamese: 'yêu quý, bảo vệ', example: '我们要爱护环境。', example_vi: 'Chúng ta phải bảo vệ môi trường.' },
+    { id: generateId('摆'), chinese: '摆', pinyin: 'bǎi', vietnamese: 'đặt, bày', example: '把书摆在桌子上。', example_vi: 'Đặt sách lên bàn.' },
+    { id: generateId('采用'), chinese: '采用', pinyin: 'cǎiyòng', vietnamese: 'áp dụng, sử dụng', example: '我们采用了新技术。', example_vi: 'Chúng tôi đã áp dụng công nghệ mới.' },
+    { id: generateId('大概'), chinese: '大概', pinyin: 'dàgài', vietnamese: 'đại khái, khoảng', example: '大概需要一个小时。', example_vi: 'Cần khoảng một giờ.' },
+    { id: generateId('否则'), chinese: '否则', pinyin: 'fǒuzé', vietnamese: 'nếu không, bằng không', example: '快点，否则会迟到。', example_vi: 'Nhanh lên, nếu không sẽ bị muộn.' },
   ],
   hsk5: [
-    { chinese: '爱不释手', pinyin: 'ài bù shì shǒu', vietnamese: 'yêu thích không rời tay', example: '这本书让我爱不释手。', example_vi: 'Cuốn sách này khiến tôi không thể rời tay.' },
-    { chinese: '辩证', pinyin: 'biànzhèng', vietnamese: 'biện chứng', example: '要用辩证的方法看问题。', example_vi: 'Phải nhìn vấn đề bằng phương pháp biện chứng.' },
-    { chinese: '承担', pinyin: 'chéngdān', vietnamese: 'gánh chịu, đảm nhận', example: '你必须承担责任。', example_vi: 'Bạn phải chịu trách nhiệm.' },
-    { chinese: '当务之急', pinyin: 'dāng wù zhī jí', vietnamese: 'việc cấp bách hiện tại', example: '当务之急是解决这个问题。', example_vi: 'Việc cấp bách hiện tại là giải quyết vấn đề này.' },
-    { chinese: '奋斗', pinyin: 'fèndòu', vietnamese: 'phấn đấu, nỗ lực', example: '为理想而奋斗。', example_vi: 'Phấn đấu vì lý tưởng.' },
+    { id: generateId('爱不释手'), chinese: '爱不释手', pinyin: 'ài bù shì shǒu', vietnamese: 'yêu thích không rời tay', example: '这本书让我爱不释手。', example_vi: 'Cuốn sách này khiến tôi không thể rời tay.' },
+    { id: generateId('辩证'), chinese: '辩证', pinyin: 'biànzhèng', vietnamese: 'biện chứng', example: '要用辩证的方法看问题。', example_vi: 'Phải nhìn vấn đề bằng phương pháp biện chứng.' },
+    { id: generateId('承担'), chinese: '承担', pinyin: 'chéngdān', vietnamese: 'gánh chịu, đảm nhận', example: '你必须承担责任。', example_vi: 'Bạn phải chịu trách nhiệm.' },
+    { id: generateId('当务之急'), chinese: '当务之急', pinyin: 'dāng wù zhī jí', vietnamese: 'việc cấp bách hiện tại', example: '当务之急是解决这个问题。', example_vi: 'Việc cấp bách hiện tại là giải quyết vấn đề này.' },
+    { id: generateId('奋斗'), chinese: '奋斗', pinyin: 'fèndòu', vietnamese: 'phấn đấu, nỗ lực', example: '为理想而奋斗。', example_vi: 'Phấn đấu vì lý tưởng.' },
   ],
 };
 
@@ -66,7 +79,11 @@ export class FlashcardService {
   private async readFromCache(level: string): Promise<Flashcard[]> {
     const db = await this.getDb();
     const results = await db.getAllFromIndex(STORE_NAME, 'by-level', level);
-    return results as Flashcard[];
+    // Backfill id for records written before this field was introduced
+    return (results as Flashcard[]).map(card => ({
+      ...card,
+      id: card.id ?? generateId(card.chinese),
+    }));
   }
 
   private async writeToCache(level: string, cards: Flashcard[]): Promise<void> {
@@ -101,9 +118,14 @@ export class FlashcardService {
 
         // Fetch fresh data in background
         const apiUpdate$ = this.http
-          .get<Flashcard[]>(`${API_BASE}/flashcards/${level}`)
+          .get<FlashcardPayload[]>(`${API_BASE}/flashcards/${level}`)
           .pipe(
-            switchMap((fetched) => {
+            switchMap((raw) => {
+              // Assign stable IDs from chinese characters (API does not provide id)
+              const fetched: Flashcard[] = raw.map(card => ({
+                ...card,
+                id: generateId(card.chinese),
+              }));
               // Only emit if data changed
               if (!this.isDataEqual(cached, fetched)) {
                 this.writeToCache(level, fetched).catch(console.error);

@@ -7,12 +7,12 @@ export interface CardState {
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
-  private key(level: string, chinese: string): string {
-    return `card:${level}:${chinese}`;
+  private key(level: string, id: string): string {
+    return `card:${level}:${id}`;
   }
 
-  getState(level: string, chinese: string): CardState {
-    const raw = localStorage.getItem(this.key(level, chinese));
+  getState(level: string, id: string): CardState {
+    const raw = localStorage.getItem(this.key(level, id));
     if (!raw) return { recalled: 0, remembered: 0 };
     try {
       return JSON.parse(raw) as CardState;
@@ -21,16 +21,16 @@ export class StorageService {
     }
   }
 
-  incrementRecalled(level: string, chinese: string): void {
-    const state = this.getState(level, chinese);
+  incrementRecalled(level: string, id: string): void {
+    const state = this.getState(level, id);
     state.recalled += 1;
-    localStorage.setItem(this.key(level, chinese), JSON.stringify(state));
+    localStorage.setItem(this.key(level, id), JSON.stringify(state));
   }
 
-  incrementRemembered(level: string, chinese: string): void {
-    const state = this.getState(level, chinese);
+  incrementRemembered(level: string, id: string): void {
+    const state = this.getState(level, id);
     state.remembered += 1;
-    localStorage.setItem(this.key(level, chinese), JSON.stringify(state));
+    localStorage.setItem(this.key(level, id), JSON.stringify(state));
   }
 
   resetAll(): void {
