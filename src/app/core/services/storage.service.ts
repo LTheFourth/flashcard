@@ -33,11 +33,11 @@ export class StorageService {
     localStorage.setItem(this.key(level, id), JSON.stringify(state));
   }
 
-  resetAll(): void {
+  resetLevel(level: string): void {
     const keysToRemove: string[] = [];
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
-      if (k && k.startsWith('card:')) {
+      if (k && k.startsWith(`card:${level}:`)) {
         keysToRemove.push(k);
       }
     }

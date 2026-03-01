@@ -1,9 +1,8 @@
-import { Component, ElementRef, computed, inject, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { StateService } from '../../../../core/services/state.service';
 import { Flashcard } from '../../../../core/services/flashcard.service';
-import { StorageService } from '../../../../core/services/storage.service';
 
 @Component({
   selector: 'app-card-display',
@@ -301,8 +300,8 @@ import { StorageService } from '../../../../core/services/storage.service';
         <!-- Position + stats row -->
         <div class="position-row">
           <span class="position-text">{{ currentIndex + 1 }} · {{ totalCards }}</span>
-          <span class="stat-pill recall-pill">↩ {{ cardState().recalled }}</span>
-          <span class="stat-pill remember-pill">✓ {{ cardState().remembered }}</span>
+          <span class="stat-pill recall-pill">↩ {{ recallCount }}</span>
+          <span class="stat-pill remember-pill">✓ {{ rememberCount }}</span>
         </div>
 
         <!-- Card scene -->
@@ -380,14 +379,14 @@ export class CardDisplayComponent {
   @ViewChild('cardScene') cardSceneRef!: ElementRef<HTMLElement>;
 
   private state = inject(StateService);
-  private storage = inject(StorageService);
 
   // ── reactive observables as signals ────────────────────────────────────
-  private currentLevelSignal = toSignal(this.state.currentLevel$, { initialValue: 'hsk3' });
   private currentIndexSignal = toSignal(this.state.currentCardIndex$, { initialValue: 0 });
   private cardQueueSignal = toSignal(this.state.cardQueue$, { initialValue: [] });
   private isLoadingSignal = toSignal(this.state.isLoading$, { initialValue: false });
   private hasErrorSignal = toSignal(this.state.hasError$, { initialValue: false });
+  private recallCountSignal = toSignal(this.state.recallCount$, { initialValue: 0 });
+  private rememberCountSignal = toSignal(this.state.rememberCount$, { initialValue: 0 });
 
   // ── flip state ──────────────────────────────────────────────────────────
   isFlipped = signal(false);
@@ -529,16 +528,14 @@ export class CardDisplayComponent {
 
   private doRecall(): void {
     const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRecalled(this.state.currentLevel$.value, card.id);
+    if (card) this.state.recordRecall(card.id);
     this.resetFlip();
     this.state.nextCard();
   }
 
   private doRemember(): void {
     const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRemembered(this.state.currentLevel$.value, card.id);
+    if (card) this.state.recordRemember(card.id);
     this.resetFlip();
     this.state.nextCard();
   }
@@ -571,14 +568,12 @@ export class CardDisplayComponent {
     return this.cardQueueSignal().length;
   }
 
-  /** Reactive card state (recall/remember counts) — computed from current card */
-  cardState = computed(() => {
-    const queue = this.cardQueueSignal();
-    const idx = this.currentIndexSignal();
-    const card = queue[idx] ?? null;
-    const level = this.currentLevelSignal();
+  get recallCount(): number {
+    return this.recallCountSignal();
+  }
 
-    if (!card) return { recalled: 0, remembered: 0 };
-    return this.storage.getState(level, card.id);
-  });
+  get rememberCount(): number {
+    return this.rememberCountSignal();
+  }
+
 }

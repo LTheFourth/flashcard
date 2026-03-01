@@ -20,6 +20,8 @@ export class StateService {
   readonly isOffline$ = new BehaviorSubject<boolean>(!navigator.onLine);
   readonly isLoading$ = new BehaviorSubject<boolean>(false);
   readonly hasError$ = new BehaviorSubject<boolean>(false);
+  readonly recallCount$ = new BehaviorSubject<number>(0);
+  readonly rememberCount$ = new BehaviorSubject<number>(0);
 
   constructor(
     private flashcardService: FlashcardService,
@@ -33,13 +35,15 @@ export class StateService {
     this.isLoading$.next(true);
     this.hasError$.next(false);
     this.currentCardIndex$.next(0);
+    this.recallCount$.next(0);
+    this.rememberCount$.next(0);
 
     this.flashcardService.getCards(level).subscribe({
       next: (cards) => {
         if (cards.length === 0) {
           this.hasError$.next(true);
         }
-        this.cardQueue$.next(this.sortByFrequency(cards, level));
+        this.cardQueue$.next(this.shuffle(cards));
         this.isLoading$.next(false);
       },
       error: () => {
@@ -61,29 +65,39 @@ export class StateService {
   nextCard(): void {
     const queue = this.cardQueue$.value;
     if (queue.length === 0) return;
-    const next = (this.currentCardIndex$.value + 1) % queue.length;
-    this.currentCardIndex$.next(next);
+    const nextIndex = this.currentCardIndex$.value + 1;
+    if (nextIndex >= queue.length) {
+      // Reshuffle and start a new cycle
+      this.cardQueue$.next(this.shuffle([...queue]));
+      this.currentCardIndex$.next(0);
+    } else {
+      this.currentCardIndex$.next(nextIndex);
+    }
   }
 
   resetAll(): void {
-    this.storageService.resetAll();
-    const level = this.currentLevel$.value;
-    const cards = this.cardQueue$.value;
-    this.cardQueue$.next(this.sortByFrequency(cards, level));
+    this.storageService.resetLevel(this.currentLevel$.value);
+    this.recallCount$.next(0);
+    this.rememberCount$.next(0);
     this.currentCardIndex$.next(0);
   }
 
-  /**
-   * Cards with higher (recalled - remembered) weight appear earlier in queue.
-   * Ties broken by original order.
-   */
-  private sortByFrequency(cards: Flashcard[], level: string): Flashcard[] {
-    return [...cards].sort((a, b) => {
-      const sa = this.storageService.getState(level, a.id);
-      const sb = this.storageService.getState(level, b.id);
-      const wa = sa.recalled - sa.remembered;
-      const wb = sb.recalled - sb.remembered;
-      return wb - wa;
-    });
+  recordRecall(cardId: string): void {
+    this.storageService.incrementRecalled(this.currentLevel$.value, cardId);
+    this.recallCount$.next(this.recallCount$.value + 1);
+  }
+
+  recordRemember(cardId: string): void {
+    this.storageService.incrementRemembered(this.currentLevel$.value, cardId);
+    this.rememberCount$.next(this.rememberCount$.value + 1);
+  }
+
+  private shuffle<T>(arr: T[]): T[] {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
   }
 }

@@ -1,6 +1,5 @@
 import { Component, inject, output } from '@angular/core';
 import { StateService } from '../../../../core/services/state.service';
-import { StorageService } from '../../../../core/services/storage.service';
 
 @Component({
   selector: 'app-control-area',
@@ -73,20 +72,17 @@ export class ControlAreaComponent {
   readonly onFlipReset = output<void>();
 
   private state = inject(StateService);
-  private storage = inject(StorageService);
 
   recall(): void {
     const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRecalled(this.state.currentLevel$.value, card.id);
+    if (card) this.state.recordRecall(card.id);
     this.onFlipReset.emit();
     this.state.nextCard();
   }
 
   remember(): void {
     const card = this.currentCard;
-    if (!card) return;
-    this.storage.incrementRemembered(this.state.currentLevel$.value, card.id);
+    if (card) this.state.recordRemember(card.id);
     this.onFlipReset.emit();
     this.state.nextCard();
   }
@@ -96,4 +92,5 @@ export class ControlAreaComponent {
     const idx = this.state.currentCardIndex$.value;
     return queue[idx] ?? null;
   }
+
 }
