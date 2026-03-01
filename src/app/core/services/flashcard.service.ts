@@ -17,6 +17,9 @@ export interface Flashcard {
 /** Raw shape returned by the API (no id, no level) */
 type FlashcardPayload = Omit<Flashcard, 'id' | 'level'>;
 
+/** Input shape for posting new flashcards (no id, no level) */
+export type FlashcardInput = Omit<Flashcard, 'id' | 'level'>;
+
 /** Deterministic base-36 hash of Chinese characters — stable across app restarts */
 function generateId(chinese: string): string {
   let h = 5381;
@@ -160,5 +163,9 @@ export class FlashcardService {
       switchMap(() => of(true)),
       catchError(() => of(false))
     );
+  }
+
+  postCards(level: string, cards: FlashcardInput[]): Observable<{ message: string; total: number }> {
+    return this.http.post<{ message: string; total: number }>(`${API_BASE}/flashcards/${level}`, cards);
   }
 }

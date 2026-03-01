@@ -6,7 +6,7 @@ import { StorageService } from './storage.service';
 /** The "main face" of the card shown before flipping. */
 export type LanguageMode = 'chinese' | 'vietnamese';
 
-export const HSK_LEVELS = ['hsk3', 'hsk4', 'hsk5'] as const;
+export const HSK_LEVELS = ['hsk3', 'hsk4', 'hsk5', 'hsk6', 'hsk7', 'hsk8', 'hsk9'] as const;
 export type HskLevel = (typeof HSK_LEVELS)[number];
 
 export const LANGUAGE_MODES: LanguageMode[] = ['chinese', 'vietnamese'];

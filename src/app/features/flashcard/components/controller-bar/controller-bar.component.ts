@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StateService, HSK_LEVELS, HskLevel, LanguageMode } from '../../../../core/services/state.service';
 
@@ -146,6 +146,25 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
     .reset-btn:hover {
       background: var(--accent-pale);
     }
+
+    /* ── Add Button ── */
+    .add-btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid rgba(58, 124, 86, 0.25);
+      background: transparent;
+      color: var(--green);
+      font-family: 'Crimson Pro', serif;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .add-btn:hover {
+      background: var(--green-pale);
+    }
   `],
   template: `
     <div class="bar">
@@ -195,6 +214,15 @@ const LANGUAGE_LABELS: Record<LanguageMode, string> = {
         Reset
       </button>
 
+      <!-- Add Cards Button -->
+      <button
+        (click)="onAddCards.emit()"
+        class="add-btn"
+        title="Add flashcards to a level"
+      >
+        + Add
+      </button>
+
     </div>
   `,
 })
@@ -203,6 +231,7 @@ export class ControllerBarComponent {
 
   readonly hskLevels = HSK_LEVELS;
   readonly isDropdownOpen = signal(false);
+  readonly onAddCards = output<void>();
 
   get currentLevel(): HskLevel {
     return this.state.currentLevel$.value;
