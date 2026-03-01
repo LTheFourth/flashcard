@@ -149,6 +149,8 @@ import { StorageService } from '../../../../core/services/storage.service';
       letter-spacing: 0.08em;
       text-transform: uppercase;
       pointer-events: none;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
       /* opacity driven by swipe progress — set via inline style */
     }
     .badge-recall {

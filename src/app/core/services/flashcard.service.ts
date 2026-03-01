@@ -1,7 +1,7 @@
 import { Injectable, isDevMode } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, from, of } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Observable, from, of, EMPTY, merge } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { openDB, IDBPDatabase } from 'idb';
 
 export interface Flashcard {
@@ -84,23 +84,52 @@ export class FlashcardService {
     await tx.done;
   }
 
+  private isDataEqual(a: Flashcard[], b: Flashcard[]): boolean {
+    if (a.length !== b.length) return false;
+    const sortFn = (x: Flashcard, y: Flashcard) => x.chinese.localeCompare(y.chinese);
+    const normalize = (arr: Flashcard[]) =>
+      [...arr].sort(sortFn).map(({ chinese, pinyin, vietnamese, example, example_vi }) =>
+        ({ chinese, pinyin, vietnamese, example, example_vi }));
+    return JSON.stringify(normalize(a)) === JSON.stringify(normalize(b));
+  }
+
   getCards(level: string): Observable<Flashcard[]> {
-    return this.http.get<Flashcard[]>(`${API_BASE}/flashcards/${level}`).pipe(
-      tap((cards) => {
-        this.writeToCache(level, cards).catch(console.error);
-      }),
-      catchError(() =>
-        from(this.readFromCache(level)).pipe(
-          switchMap((cached) => {
-            if (cached.length > 0) return of(cached);
-            if (isDevMode() && MOCK_DATA[level]) {
-              console.warn(`[DEV] API and cache failed for ${level} — using mock data`);
-              return of(MOCK_DATA[level]);
-            }
-            return of([]);
-          })
-        )
-      )
+    return from(this.readFromCache(level)).pipe(
+      switchMap((cached) => {
+        // Emit cached data immediately if available
+        const emitCached$ = cached.length > 0 ? of(cached) : EMPTY;
+
+        // Fetch fresh data in background
+        const apiUpdate$ = this.http
+          .get<Flashcard[]>(`${API_BASE}/flashcards/${level}`)
+          .pipe(
+            switchMap((fetched) => {
+              // Only emit if data changed
+              if (!this.isDataEqual(cached, fetched)) {
+                this.writeToCache(level, fetched).catch(console.error);
+                return of(fetched);
+              }
+              // Data unchanged — no UI update needed
+              return EMPTY;
+            }),
+            catchError(() => {
+              // API failed
+              if (cached.length > 0) {
+                // Cache was already emitted, stay silent
+                return EMPTY;
+              }
+              // No cache — use mock (dev) or empty array (prod)
+              if (isDevMode() && MOCK_DATA[level]) {
+                console.warn(`[DEV] API and cache failed for ${level} — using mock data`);
+                return of(MOCK_DATA[level]);
+              }
+              return of([]);
+            })
+          );
+
+        // Emit cached data first, then API update if different
+        return merge(emitCached$, apiUpdate$);
+      })
     );
   }
 
